@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/dientes2.png');
+            background-repeat: repeat;
+            background-size: 50%;
+            filter: grayscale(100%) blur(0px) brightness(100%) opacity(100%) contrast(100%);
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 8px;
+            z-index: 2;
+        }
+
+        .controls label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        .controls input[type="range"] {
+            width: 100%;
+        }
+
+        .controls .value {
+            display: block;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="background" id="background"></div>
+    <div class="content">
+        <h1>Hello world!</h1>
+    </div>
+    <div class="controls">
+        <label for="bgImage">Imagen de Fondo:</label>
+        <input type="file" id="bgImage" name="bgImage" accept="image/*"><br>
+
+        <label for="bgColor">Color de Fondo:</label>
+        <input type="color" id="bgColor" name="bgColor" value="#fff">
+        <span class="value" id="bgColorValue">#fff</span><br>
+
+        <label for="grayscale">Escala de Grises (%):</label>
+        <input type="range" id="grayscale" name="grayscale" min="0" max="100" value="100">
+        <span class="value" id="grayscaleValue">100%</span><br>
+
+        <label for="blur">Desenfoque (px):</label>
+        <input type="range" id="blur" name="blur" min="0" max="20" value="0">
+        <span class="value" id="blurValue">0px</span><br>
+
+        <label for="brightness">Brillo (%):</label>
+        <input type="range" id="brightness" name="brightness" min="0" max="200" value="100">
+        <span class="value" id="brightnessValue">100%</span><br>
+
+        <label for="opacity">Opacidad (%):</label>
+        <input type="range" id="opacity" name="opacity" min="0" max="100" value="100">
+        <span class="value" id="opacityValue">100%</span><br>
+
+        <label for="contrast">Contraste (%):</label>
+        <input type="range" id="contrast" name="contrast" min="0" max="200" value="100">
+        <span class="value" id="contrastValue">100%</span><br>
+
+        <label for="bgSize">Tamaño del Fondo (%):</label>
+        <input type="range" id="bgSize" name="bgSize" min="10" max="200" value="50">
+        <span class="value" id="bgSizeValue">50%</span>
+    </div>
+    <script>
+        const bgImageInput = document.getElementById('bgImage');
+        const bgColorInput = document.getElementById('bgColor');
+        const grayscaleInput = document.getElementById('grayscale');
+        const blurInput = document.getElementById('blur');
+        const brightnessInput = document.getElementById('brightness');
+        const opacityInput = document.getElementById('opacity');
+        const contrastInput = document.getElementById('contrast');
+        const bgSizeInput = document.getElementById('bgSize');
+
+        const bgColorValue = document.getElementById('bgColorValue');
+        const grayscaleValue = document.getElementById('grayscaleValue');
+        const blurValue = document.getElementById('blurValue');
+        const brightnessValue = document.getElementById('brightnessValue');
+        const opacityValue = document.getElementById('opacityValue');
+        const contrastValue = document.getElementById('contrastValue');
+        const bgSizeValue = document.getElementById('bgSizeValue');
+
+        const background = document.getElementById('background');
+
+        function updateFilters() {
+            background.style.filter = `
+                grayscale(${grayscaleInput.value}%)
+                blur(${blurInput.value}px)
+                brightness(${brightnessInput.value}%)
+                opacity(${opacityInput.value}%)
+                contrast(${contrastInput.value}%)
+            `;
+        }
+
+        function updateBackgroundSize() {
+            background.style.backgroundSize = `${bgSizeInput.value}%`;
+            bgSizeValue.textContent = `${bgSizeInput.value}%`;
+        }
+
+        bgImageInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    background.style.backgroundImage = `url('${e.target.result}')`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        bgColorInput.addEventListener('input', function() {
+            document.body.style.backgroundColor = this.value;
+            bgColorValue.textContent = this.value;
+        });
+
+        grayscaleInput.addEventListener('input', function() {
+            grayscaleValue.textContent = `${this.value}%`;
+            updateFilters();
+        });
+
+        blurInput.addEventListener('input', function() {
+            blurValue.textContent = `${this.value}px`;
+            updateFilters();
+        });
+
+        brightnessInput.addEventListener('input', function() {
+            brightnessValue.textContent = `${this.value}%`;
+            updateFilters();
+        });
+
+        opacityInput.addEventListener('input', function() {
+            opacityValue.textContent = `${this.value}%`;
+            updateFilters();
+        });
+
+        contrastInput.addEventListener('input', function() {
+            contrastValue.textContent = `${this.value}%`;
+            updateFilters();
+        });
+
+        bgSizeInput.addEventListener('input', updateBackgroundSize);
+
+        // Inicializar valores
+        bgColorValue.textContent = bgColorInput.value;
+        grayscaleValue.textContent = `${grayscaleInput.value}%`;
+        blurValue.textContent = `${blurInput.value}px`;
+        brightnessValue.textContent = `${brightnessInput.value}%`;
+        opacityValue.textContent = `${opacityInput.value}%`;
+        contrastValue.textContent = `${contrastInput.value}%`;
+        bgSizeValue.textContent = `${bgSizeInput.value}%`;
+    </script>
+</body>
+</html>
